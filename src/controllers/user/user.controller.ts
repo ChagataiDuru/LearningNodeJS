@@ -61,8 +61,6 @@ const signUp = async (req: Request, res: Response, next: NextFunction): Promise<
 
     let isUserExist = await User.findOne({ email })
 
-    console.log(isUserExist)
-
     if(isUserExist){
       throw "Email already in use"
     }
@@ -89,4 +87,27 @@ const signUp = async (req: Request, res: Response, next: NextFunction): Promise<
   }
 }
 
-export { getUsers, addUser, deleteUser, signUp }
+const signIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const email = req.body.email
+    const password = req.body.password
+
+    let user = await User.findOne({ email })
+
+    if(!user){
+      throw "Invalid Email"
+    }
+
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (err) throw new Error("Internal Server Error");
+      if (result) return res.status(200).json({ message: "User Logged in Successfully" });
+
+      return res.status(401).json({ message: "Invalid Credentials" });
+    });
+
+  }catch (error){
+    next(error)
+  }
+}
+
+export { getUsers, addUser, deleteUser, signUp, signIn }

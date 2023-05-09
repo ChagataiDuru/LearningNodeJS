@@ -4,5 +4,5 @@ export interface IUser extends Document {
     name: string
     age: number
     email: String
-    password: String
+    password: string
 }
