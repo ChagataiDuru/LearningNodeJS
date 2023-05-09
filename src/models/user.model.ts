@@ -8,10 +8,11 @@ const userSchema: Schema = new Schema(
             required: true,
         },
         age: {
-            type: Number,
+            type:  Number,
             required: true,
-        }
-    }
+        },
+    },
+    {timestamps: true} 
 )
 
 export default model<IUser>("User",userSchema);

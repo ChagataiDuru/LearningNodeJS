@@ -1,6 +1,6 @@
 import { Response, Request } from "express"
 import { IUser } from "./../../types/user.type"
-import User from "../../models/user.model"
+import  User from "../../models/user.model"
 
 const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -15,6 +15,7 @@ const getUsers = async (req: Request, res: Response): Promise<void> => {
 
 const addUser = async (req: Request, res: Response): Promise<void> => {
     try {
+        console.log(req.body)
       const body = req.body as Pick<IUser, "name" | "age" >
   
       const user: IUser = new User({
