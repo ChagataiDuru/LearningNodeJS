@@ -1,6 +1,7 @@
 import { IUser } from "./../types/user.type"
 import { model, Schema } from "mongoose"
-import isEmail from "validator"
+
+import isEmail from "validator/lib/isEmail"
 
 const userSchema: Schema = new Schema(
     {
@@ -16,7 +17,8 @@ const userSchema: Schema = new Schema(
             type: String,
             required: [true, 'Email is  required'],
             validate: {
-                validator: isEmail
+                validator: isEmail,
+                message: (props: { value: any }) => `${props.value} is not a valid email`
             }
         },
         password: {

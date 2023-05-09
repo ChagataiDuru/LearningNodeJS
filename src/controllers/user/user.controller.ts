@@ -1,6 +1,7 @@
 import { Response, Request, NextFunction } from "express"
 import { IUser } from "./../../types/user.type"
 import  User from "../../models/user.model"
+import  bcrypt from "bcrypt"
 
 const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -51,5 +52,41 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction): Prom
       next(error)
     }
 }
-  
-export { getUsers, addUser, deleteUser }
+
+const signUp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const body = req.body as Pick<IUser, "name" | "age" | "email" | "password" >
+    const email = req.body.email
+    const password = req.body.password
+
+    let isUserExist = await User.findOne({ email })
+
+    console.log(isUserExist)
+
+    if(isUserExist){
+      throw "Email already in use"
+    }
+
+    bcrypt.hash(password, 10,(err, hash) => {
+      if (err) throw new Error("Internal Server Error");
+      const user: IUser = new User({
+        name: body.name,
+        age: body.age,
+        email: body.email,
+        password: hash,
+      })
+
+      user.save()
+      .then(() => {
+        res.status(201)
+        .json({ message: "User created", user: user})
+      })
+
+    });
+
+  }catch (error){
+    next(error)
+  }
+}
+
+export { getUsers, addUser, deleteUser, signUp }
