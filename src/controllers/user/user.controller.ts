@@ -1,19 +1,19 @@
-import { Response, Request } from "express"
+import { Response, Request, NextFunction } from "express"
 import { IUser } from "./../../types/user.type"
 import  User from "../../models/user.model"
 
-const getUsers = async (req: Request, res: Response): Promise<void> => {
+const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const users: IUser[] = await User.find()
     res
     .status(200)
     .json({ users })
   } catch (error) {
-    throw error
+    next(error)
   }
 }
 
-const addUser = async (req: Request, res: Response): Promise<void> => {
+const addUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         console.log(req.body)
       const body = req.body as Pick<IUser, "name" | "age" >
@@ -30,11 +30,11 @@ const addUser = async (req: Request, res: Response): Promise<void> => {
         .status(201)
         .json({ message: "User added", user: newUser, users: allUsers })
     } catch (error) {
-      throw error
+      next(error)
     }
   }
 
-const deleteUser = async (req: Request, res: Response): Promise<void> => {
+const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const deletedUser: IUser | null = await User.findByIdAndRemove(
         req.params.id
@@ -48,7 +48,7 @@ const deleteUser = async (req: Request, res: Response): Promise<void> => {
         Users: allUsers,
       })
     } catch (error) {
-      throw error
+      next(error)
     }
 }
   
