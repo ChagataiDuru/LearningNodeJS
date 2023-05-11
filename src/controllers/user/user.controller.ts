@@ -1,7 +1,8 @@
 import { Response, Request, NextFunction } from "express"
 import { IUser } from "./../../types/user.type"
-import  User from "../../models/user.model"
-import  bcrypt from "bcrypt"
+import User from "../../models/user.model"
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 
 const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -88,26 +89,29 @@ const signUp = async (req: Request, res: Response, next: NextFunction): Promise<
 }
 
 const signIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const email = req.body.email
-    const password = req.body.password
-
-    let user = await User.findOne({ email })
-
-    if(!user){
-      throw "Invalid Email"
+  var mail: string = req.body.email;
+  User.findOne({
+    email: mail
+  })
+  .then(user => {
+    if (!user || !user.comparePassword(req.body.password)) {
+      return res.status(401).json({ message: 'Authentication failed. Invalid user or password.' });
     }
-
-    bcrypt.compare(password, user.password, (err, result) => {
-      if (err) throw new Error("Internal Server Error");
-      if (result) return res.status(200).json({ message: "User Logged in Successfully" });
-
-      return res.status(401).json({ message: "Invalid Credentials" });
-    });
-
-  }catch (error){
+    return res.json({ token: jwt.sign({ email: user.email, name: user.name, _id: user._id }, 'RESTFULAPIs') });
+  })
+  .catch(error => {
     next(error)
+  })
+
+  }
+
+const loginRequired = (req: Request, res: Response, next: NextFunction) => {
+  if(req.user){
+    next()
+  }
+  else{
+    return res.status(401).json({ message: 'Unauthorized user!!' });
   }
 }
 
-export { getUsers, addUser, deleteUser, signUp, signIn }
+export default { getUsers, addUser, deleteUser, signUp, signIn, loginRequired }

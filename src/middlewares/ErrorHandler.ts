@@ -10,7 +10,7 @@ const ErrorHandler = (err: any, req: Request, res: Response, next: NextFunction)
         message: errMsg,
         stack: process.env.NODE_ENV === 'development' ? err.stack : {}
     })
-    console.log(errMsg);
+    console.log("ERROR:: ",errMsg);
 }
 
 export default ErrorHandler

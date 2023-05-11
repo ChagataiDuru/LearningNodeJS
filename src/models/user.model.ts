@@ -1,5 +1,8 @@
 import { IUser } from "./../types/user.type"
 import { model, Schema } from "mongoose"
+import { use } from "passport"
+import  bcrypt from "bcrypt"
+
 
 import isEmail from "validator/lib/isEmail"
 
@@ -34,5 +37,9 @@ const userSchema: Schema = new Schema(
     },
     {timestamps: true} 
 )
+
+userSchema.methods.comparePassword = function(password: string){
+    return bcrypt.compareSync(password, this.password)
+}
 
 export default model<IUser>("User",userSchema);
