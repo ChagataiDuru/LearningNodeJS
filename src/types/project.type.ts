@@ -7,4 +7,13 @@ export interface IProject extends Document {
         type: Types.ObjectId
         ref: "User"
     }
+    workpackages: [{
+        type: Types.ObjectId
+        ref: "Workpackage"
+    }]
+
+}
+
+export interface userPayload {
+    _id: string
 }

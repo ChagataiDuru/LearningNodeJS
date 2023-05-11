@@ -1,12 +1,14 @@
-import { IUser } from "./../types/user.type"
-import { model, Schema } from "mongoose"
+import { IUser,IUserMethods } from "./../types/user.type"
+import { model, Schema, Model } from "mongoose"
 import { use } from "passport"
 import  bcrypt from "bcrypt"
 
 
 import isEmail from "validator/lib/isEmail"
 
-const userSchema: Schema = new Schema(
+type UserModel = Model<IUser, {}, IUserMethods>;
+
+const userSchema: Schema = new Schema<IUser, UserModel,IUserMethods>(
     {
         name: {
             type: String,
@@ -42,4 +44,4 @@ userSchema.methods.comparePassword = function(password: string){
     return bcrypt.compareSync(password, this.password)
 }
 
-export default model<IUser>("User",userSchema);
+export default model<IUser,UserModel>("User",userSchema);

@@ -94,6 +94,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction): Promise<
     email: mail
   })
   .then(user => {
+    
     if (!user || !user.comparePassword(req.body.password)) {
       return res.status(401).json({ message: 'Authentication failed. Invalid user or password.' });
     }
@@ -107,6 +108,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction): Promise<
 
 const loginRequired = (req: Request, res: Response, next: NextFunction) => {
   if(req.user){
+    console.log(req.user)
     next()
   }
   else{
