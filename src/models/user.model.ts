@@ -1,14 +1,19 @@
-import { IUser,IUserMethods } from "./../types/user.type"
+import { Document } from "mongodb";
 import { model, Schema, Model } from "mongoose"
-import { use } from "passport"
+import { NextFunction } from "express";
 import  bcrypt from "bcrypt"
 
+import { IUser,IUserMethods } from "./../types/user.type"
+import { IProject } from "../types/project.type"
+import Project from "./project.model"
 
 import isEmail from "validator/lib/isEmail"
 
+
+
 type UserModel = Model<IUser, {}, IUserMethods>;
 
-const userSchema: Schema = new Schema<IUser, UserModel,IUserMethods>(
+const userSchema: Schema = new Schema(
     {
         name: {
             type: String,
@@ -23,7 +28,7 @@ const userSchema: Schema = new Schema<IUser, UserModel,IUserMethods>(
             required: [true, 'Email is  required'],
             validate: {
                 validator: isEmail,
-                message: (props: { value: any }) => `${props.value} is not a valid email`
+                message: (props: { value: String }) => `${props.value} is not a valid email`
             }
         },
         password: {
@@ -42,6 +47,6 @@ const userSchema: Schema = new Schema<IUser, UserModel,IUserMethods>(
 
 userSchema.methods.comparePassword = function(password: string){
     return bcrypt.compareSync(password, this.password)
-}
+};
 
 export default model<IUser,UserModel>("User",userSchema);

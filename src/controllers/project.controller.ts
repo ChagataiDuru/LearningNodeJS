@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from "express"
-import { IProject,userPayload } from "./../../types/project.type"
-import Project from "../../models/project.model"
+import { IProject,userPayload } from "../types/project.type"
+import Project from "../models/project.model"
 
 const getProjects = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {

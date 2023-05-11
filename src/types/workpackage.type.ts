@@ -7,4 +7,8 @@ export interface IWorkPackage extends Document {
         type: Types.ObjectId
         ref: "User"
     }
+    workpackage_employees: [{
+        type: Types.ObjectId
+        ref: "User"
+    }]
 }
